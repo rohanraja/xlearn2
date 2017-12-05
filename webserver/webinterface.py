@@ -1,7 +1,8 @@
 from ..jobs import project
 import trainer
-from xlearn2.jobs import modelsIndex
-from xlearn2.jobs import datasetsIndex
+from xlearn2.jobs import getDefaultParamsForModel
+from xlearn2.jobs import getClassIndex
+from xlearn2 import loadClass
 
 def getActiveJobs(params):
 
@@ -62,10 +63,6 @@ def createModelInfo(params):
 def getDatasetName(dataId):
 
     return dataId.split("/")[-1]
-
-def getJobName(pro):
-
-    return modelsIndex[int(pro.jinfo["model_id"])].__name__
 
 def loadDatasets(params):
 
@@ -151,12 +148,12 @@ def mappers_list(params):
     
     out = []
     
-    arr = mappersIndex
+    arr = getClassIndex("mapper")
 
     for k in arr:
         obj = {}
         obj["id"] = k
-        obj["name"] = arr[k].__name__
+        obj["name"] = k
         out.append(obj)
 
     return out
@@ -164,9 +161,9 @@ def mappers_list(params):
 def get_mapper_stats(params):
     jinfo = getModelInfo(params)
 
-    DS = datasetsIndex[jinfo["dataset_id"]]
+    DS = loadClass(jinfo["dataset_id"])
     data = DS()
-    M = mappersIndex[jinfo["mapper_id"]]
+    M = loadClass(jinfo["mapper_id"])
     m = M(data)
 
     return m.getstats()
@@ -175,7 +172,7 @@ def dataset_list(params):
     
     out = []
     
-    arr = datasetsIndex
+    arr = getClassIndex("dataset")
 
     for k in arr:
         obj = {}
@@ -187,27 +184,25 @@ def dataset_list(params):
 def search_dataset(params):
 
     jinfo = getModelInfo(params)
-    DS = datasetsIndex[jinfo["dataset_id"]]
+    DS = loadClass(jinfo["dataset_id"])
     data = DS()
     phrase = params["phrase"]
 
     return data.search(phrase)
 
 
-def get_default_params(modelId):
-    return {}
 
 def models_list(params):
     
     out = []
     
-    arr = modelsIndex
+    arr = getClassIndex("model")
 
     for k in arr:
         obj = {}
         obj["id"] = k
         obj["name"] = k
-        obj["params"] = get_default_params(k)
+        obj["params"] = getDefaultParamsForModel(k)
 
         out.append(obj)
 
@@ -218,12 +213,12 @@ def embeddings_list(params):
     
     out = []
     
-    arr = embeddingsIndex
+    arr = getClassIndex("embedding")
 
     for k in arr:
         obj = {}
         obj["id"] = k
-        obj["name"] = arr[k].__name__
+        obj["name"] = k
         out.append(obj)
 
     return out

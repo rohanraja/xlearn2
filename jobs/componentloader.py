@@ -2,6 +2,7 @@ import json
 import sys
 import os
 from xlearn2 import getFullPathofLib
+from os import listdir
 
 def readClassFromPyFile(pyDir, pyFileName, className):
     sys.path.insert(0, os.path.abspath(pyDir))
@@ -11,26 +12,47 @@ def readClassFromPyFile(pyDir, pyFileName, className):
 
 def loadClass(classJsonPath):
 
-    cInfo = ClassInfo(getFullPathofLib(classJsonPath))
-    cls = cInfo.Cls
+    cInfo = ClassInfo(classJsonPath)
+    cls = cInfo.getClassFactory()
     return cls
 
 
 class ClassInfo:
-    def __init__(self, modelPath):
+    def __init__(self, classJsonPath):
+        modelPath = getFullPathofLib(classJsonPath)
         modelJsonPath = os.path.join(modelPath, "classInfo.json")
         self.modelPath = modelPath
         self.jsonData = json.load(open(modelJsonPath))
         self.parseJson()
-        self.initializeClassOjbect()
 
     def parseJson(self):
         self.modelPyFile = self.jsonData["pyFileName"]
         self.modelClassName = self.jsonData["pyClassName"]
 
-    def initializeClassOjbect(self):
-        self.Cls = readClassFromPyFile(self.modelPath, self.modelPyFile, self.modelClassName)
+    def getDefaultParams(self):
+        return self.jsonData["DefaultParams"]
 
+    def getClassFactory(self):
+        self.Cls = readClassFromPyFile(self.modelPath, self.modelPyFile, self.modelClassName)
+        return self.Cls
+
+
+def getDefaultParamsForModel(modelId):
+    cInfo = ClassInfo(modelId)
+    return cInfo.getDefaultParams()
+
+
+def getClassIndex(clsName):
+
+    try:
+        itemsPath = getFullPathofLib(clsName)
+        items = listdir(itemsPath)
+        out = []
+        for i in items:
+            out.append("%s/%s" % (clsName, i) )
+        return out
+    except:
+        return []
 
 class ComponentsLoader():
     
