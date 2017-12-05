@@ -1,0 +1,121 @@
+<div>
+
+  <br>
+
+<div class="row">
+
+  <div class="col-md-6" style="">
+    <h4> Training </h4>
+    <div style="text-align: center">
+    <button ng-click="onTrainClick()" style="" type="button" 
+      class="btn btn-circle btn-lg"
+      ng-class="{'btn-primary': trainer_running, 
+                  'btn-danger': !trainer_running}" >
+      
+     <i class="fa"
+         ng-class="{'fa-pause': trainer_running, 
+                  'fa-play': !trainer_running}"></i>
+    </button>
+  </div>
+
+    <br>
+    <progressbar style="text-align: center"  animate="false" value="epoch_percent" type="success">
+    <b>{{epoch_percent}}%</b>
+    </progressbar>
+
+  <!-- <p>Epoch 1 of 10</p> -->
+
+  <div class="form-group">
+    <label>Saved Weights</label>
+    <select 
+      class="form-control" 
+      ng-model="currentWeight"  
+      ng-options="mapr.id as (mapr.name) for mapr in savedWeights"
+      >
+    </select>
+  </div>
+  <div class="form-group">
+    <label>Total Epochs</label>
+    <input 
+      class="form-control" 
+      ng-model="nepochs"  
+      />
+  </div>
+    <br>
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <tbody>
+        <tr
+          ng-repeat="(pLabel, pValue) in trainInfo"
+          >
+          <td>{{pLabel}}</td>
+          <td>{{pValue}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+<button style="" type="button" class="btn btn-primary btn-circle btn-lg">
+  <i class="fa fa-save"></i>
+    </button>
+
+  
+  </div>
+
+  <div class="col-md-6">
+    <h4> Evaluation </h4>
+      
+    <div style="text-align: center">
+    <button  ng-click="onEvaluateClick()" style="" type="button" class="btn btn-info btn-circle btn-lg">
+      <i class="fa fa-play"></i>
+    </button>
+  </div>
+
+    <br>
+    <progressbar style="text-align: center"  
+    ng-class="{'progress-striped active': evalPercent == 100}"
+    animate="false" value="evalPercent" type="primary">
+    <b>{{evalProgressText}}</b>
+    <!-- <b>{{evalPercent}}%</b> -->
+    </progressbar>
+
+  <br>
+  <div class="form-group">
+    <label>Test Dataset</label>
+    <select 
+      class="form-control" 
+      ng-model="testDatasetId"  
+      ng-options="mapr.id as (mapr.name) for mapr in datasets"
+      >
+    </select>
+  </div> <div class="form-group">
+    <label>Corpus Range</label>
+    <input 
+      ng-keypress="($event.which === 13)?onEvaluateClick():0"
+      class="form-control" 
+      ng-model="nsents"  
+      />
+  </div> <br>
+    <br>
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <tbody>
+        <tr
+          ng-repeat="(pLabel, pValue) in evalInfo"
+          >
+          <td>{{pLabel}}</td>
+          <td>{{pValue}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  
+  
+  </div>
+</div>
+
+<style>
+td { white-space:pre }
+
+</style>
+
+</div>

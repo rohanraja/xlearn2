@@ -29,6 +29,7 @@ def createProject(pName, modelId, datasetId):
     mkdir(jobdir)
 
     params = getDefaultParams(modelId)
+    params["name"] = pName
 
     fname = join(jobdir, "jinfo.json")
     json.dump(jInfo, open(fname, 'w'))
@@ -53,7 +54,8 @@ def loadJob(pName):
 
 class Project():
 
-    baseDir = "../projects"
+
+    baseDir = CONFIG["ProjectsPath"]
 
     def __init__(self, proname):
         
@@ -67,19 +69,13 @@ class Project():
 
         fname = join(self.projectDir, "jinfo.json")
         jInfo = json.load(open(fname))
-        # jInfo = {
-        #     
-        #     "dataset_idx": 1,
-        #     "mapper_idx": 1,
-        #     "model_idx": 6,
-        # }
         return jInfo
 
     def listJobs(self):
 
         jobs = listdir(self.projectDir)
 
-        jobs = filter(lambda j: j.isdigit(), jobs)
+        jobs = filter(lambda j: j.find("json") == -1, jobs)
 
         return jobs
 
@@ -114,12 +110,7 @@ class Project():
 
     def createParamsInfo(self, params):
 
-        try:
-            jlist = self.listJobs()
-            jlist.sort(key=int)
-            newPid = (int(jlist[-1]) + 1)
-        except:
-            newPid = 0
+        newPid = params["name"]
 
         jobdir = join(self.projectDir, str(newPid))
         mkdir(jobdir)
@@ -131,19 +122,14 @@ class Project():
     @staticmethod
     def list():
         projects = listdir(Project.baseDir)
-        projects = filter(lambda j: j.isdigit(), projects)
+        # projects = filter(lambda j: j.isdigit(), projects)
 
         return projects
 
     @staticmethod
     def createModelInfo(params):
-        
-        try:
-            jlist = Project.list()
-            jlist.sort(key=int)
-            newPid = (int(jlist[-1]) + 1)
-        except:
-            newPid = 0
+
+        newPid = params["name"]
 
         jobdir = join(Project.baseDir, str(newPid))
         mkdir(jobdir)
