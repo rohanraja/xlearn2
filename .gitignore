@@ -1,0 +1,7 @@
+*.pyc
+*.py.bak
+.DS_Store
+.cache
+.pythoscope
+testdata
+mnist_png
