@@ -29,8 +29,9 @@ class Worker(threading.Thread):
         query = request.get('query', {})
 
         try:
-            # print Fore.YELLOW, "\nRequest: %s\nParams: %s\n" % (query["type"], query["params"]) , Fore.WHITE
+            print Fore.YELLOW, "\nRequest: %s\nParams: %s" % (query["type"], query["params"]) , Fore.WHITE , 
             result = getattr(webinterface, query.get("type"))(query.get("params"))
+            print Fore.CYAN, "\nResult: %s\n" % (result) , Fore.WHITE
         except Exception, e:
             result = {"Error": "%s"%e}
             print Fore.RED, "\nError: ", e, Fore.WHITE
