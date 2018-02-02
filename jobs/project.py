@@ -24,6 +24,9 @@ def getDefaultParams(modelId):
     return c.defaultParams()
 
 def createProject(pName, modelId, datasetId):
+
+    # ToDo - Add validations of modelId, datasetId, before proceeding
+    
     jInfo = createJobInfo(modelId, datasetId)
     jobdir = getProjectPath(pName)
     mkdir(jobdir)

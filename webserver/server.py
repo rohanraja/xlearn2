@@ -11,12 +11,16 @@ from tornado.web import asynchronous
 import threading
 from colorama import Fore
 from multiprocessing import Process
+import datetime
 
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
         self.render('index.html')
 
+
+lastReqTime = datetime.datetime.today()
+MAXREQTHRESH = 5
 
 class Worker(threading.Thread):
    def __init__(self, callback=None, msg='', *args, **kwargs):
@@ -25,11 +29,19 @@ class Worker(threading.Thread):
         self.msg = msg
 
    def run(self):
+        global lastReqTime
         request = json.loads(self.msg)
         query = request.get('query', {})
 
+        currReqTime = datetime.datetime.today()
+
+        timeDelta = (currReqTime - lastReqTime)
+        if timeDelta.total_seconds() > MAXREQTHRESH:
+            print Fore.WHITE, '-'*100
+
+        lastReqTime = currReqTime
         try:
-            print Fore.YELLOW, "\nRequest: %s\nParams: %s" % (query["type"], query["params"]) , Fore.WHITE , 
+            print Fore.YELLOW, "\nRequest: %s At: %s\nParams: %s" % (query["type"], currReqTime, query["params"]) , Fore.WHITE , 
             result = getattr(webinterface, query.get("type"))(query.get("params"))
             print Fore.CYAN, "\nResult: %s\n" % (result) , Fore.WHITE
         except Exception, e:
