@@ -1,7 +1,8 @@
 from pony.orm import *
 
-
 db = Database()
+
+################ MODELS DEFINITIONS START ###################
 
 
 class Project(db.Entity):
@@ -15,9 +16,9 @@ class Experiment(db.Entity):
     name = Optional(str)
     project = Required(Project)
     trained_weights = Set('TrainedWeight')
-    epoch = Optional(int)
+    epochs = Optional(int)
     hyperparams = Optional(str)
-    py_entities = Set('PyEntity')
+    py_entity_paramss = Set('PyEntityParams')
 
 
 class TrainedWeight(db.Entity):
@@ -38,7 +39,7 @@ class PyEntity(db.Entity):
     name = Optional(str)
     python_class = Required('PythonClass')
     Type = Optional(int)
-    experiments = Set(Experiment)
+    py_entity_paramss = Set('PyEntityParams')
 
 
 class PythonClass(db.Entity):
@@ -47,6 +48,17 @@ class PythonClass(db.Entity):
     className = Optional(str)
     defaultParams = Optional(str)
     pyentity = Optional(PyEntity)
+
+
+class PyEntityParams(db.Entity):
+    id = PrimaryKey(int, auto=True)
+    params = Optional(str)
+    py_entity = Required(PyEntity)
+    experiment = Required(Experiment)
+    name = Optional(str)
+
+
+################ MODELS DEFINITIONS END ###################
 
 
 db.bind(provider='sqlite', filename='xlearn.sqlite', create_db=True)
