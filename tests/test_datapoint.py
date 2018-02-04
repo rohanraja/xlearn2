@@ -1,5 +1,5 @@
 import unittest
-from xlearn2 import datapoint
+from xlearn2 import datapoint, config
 from pony.orm import db_session
 
 PROJECT_NAME = "mnist_test"
@@ -68,8 +68,12 @@ class TestListAllProjects(unittest.TestCase):
         model_entityParams = datapoint.CreatePyEntityParams(MODEL_NAME+"_testParams", MODEL_PARAMS, model_entity, eid)
         print("MODEL PYENTITYPARAMS ID: ", model_entityParams)
 
-        dataset_entityParams = datapoint.CreatePyEntityParams(DATASET_NAME+"_testParams", DATASET_PARAMS, dataset_entity, eid)
+        dataset_entityParams = datapoint.CreatePyEntityParams(DATASET_NAME+"_trainParams", DATASET_PARAMS, dataset_entity, eid)
         print("DATASET PYENTITYPARAMS ID: ", dataset_entityParams)
+
+        testParamId = datapoint.CreatePyEntityParams(DATASET_NAME+"_testParams", DATASET_PARAMS, dataset_entity, eid, config.TEST_TYPE)
+        print("TEST DATASET PYENTITYPARAMS ID: ", testParamId)
+
 
     def test_listing_experiment_entities(self):
 

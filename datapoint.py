@@ -60,18 +60,26 @@ def CreatePyEntity(name, entityType, pyClassId):
     return cls.id
 
 @db_session
-def CreatePyEntityParams(name, params, pyEntityId, experimentId):
+def CreatePyEntityParams(name, params, pyEntityId, experimentId, role=-1):
+
     pyEntity = getPyEntityById(pyEntityId)
+
+    if role == -1:
+        role = pyEntity.Type
+
     exp = getExperimentById(experimentId)
-    cls = PyEntityParams(name=name, params=params, py_entity=pyEntity, experiment=exp)
+    cls = PyEntityParams(name=name, params=params, py_entity=pyEntity, experiment=exp, role=role)
     commit()
     return cls.id
 
 @db_session
-def CreatePyEntityForExperiment(name, pyCode, params, experimentId, Type):
+def CreatePyEntityForExperiment(name, pyCode, params, experimentId, Type, role=-1):
+    if role == -1:
+        role = Type
+
     cid = CreatePyClass(pyCode, name, params)
     enId = CreatePyEntity(name, Type, cid)
-    enParamId = CreatePyEntityParams(name+"_params", params, enid, experimentId)
+    enParamId = CreatePyEntityParams(name+"_params", params, enId, experimentId, role)
     return enParamId
 
 @db_session

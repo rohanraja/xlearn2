@@ -56,6 +56,7 @@ class PyEntityParams(db.Entity):
     py_entity = Required(PyEntity)
     experiment = Required(Experiment)
     name = Optional(str)
+    role = Optional(int)
 
 
 ################ MODELS DEFINITIONS END ###################

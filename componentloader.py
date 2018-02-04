@@ -30,6 +30,22 @@ class ComponentsLoader():
     def loadComponents(self):
         self.loadEntityList()
 
+        if MODEL_TYPE in self.Components:
+            self.model = self.Components[MODEL_TYPE][0]
+
+        if DATASET_TYPE in self.Components:
+            self.train_dataset = self.Components[DATASET_TYPE][0]
+
+        if TEST_TYPE in self.Components:
+            self.test_dataset = self.Components[TEST_TYPE][0]
+
+        if VALIDATION_TYPE in self.Components:
+            self.validation_dataset = self.Components[VALIDATION_TYPE][0]
+
+        if PREPROCESSOR_TYPE in self.Components:
+            self.preprocessors = self.Components[PREPROCESSOR_TYPE]
+            self.preprocessors.sort(key=lambda x: x.entityParam.role)
+
     def getPyObject(self, entityParam):
         ent = entityParam.py_entity
         pycls = ent.python_class
@@ -54,10 +70,13 @@ class ComponentsLoader():
 
             entity_py_object = self.getPyObject(entityParam)
 
-            compList = self.Components.get(entity.Type, [])
+            key = min(entityParam.role, PREPROCESSOR_TYPE)
+
+
+            compList = self.Components.get(key, [])
             compList.append(entity_py_object)
 
-            self.Components[entity.Type] = compList
+            self.Components[key] = compList
 
             if entity.Type == MODEL_TYPE:
                 print("Found Model: %s"%entity.name)

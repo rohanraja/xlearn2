@@ -29,6 +29,8 @@ class TestLoadingPYEntites(unittest.TestCase):
 
       print(c.Components)
       assert len(c.Components[config.MODEL_TYPE]) == 1
+      assert DATASET_CLASS_NAME == c.train_dataset.__class__.__name__
+      assert DATASET_CLASS_NAME == c.test_dataset.__class__.__name__
 
 
 if __name__ == '__main__':
