@@ -12,7 +12,7 @@ class MnistModel(nn.Module):
 
     def __init__(self, hyperParams={}):
 
-        print(Fore.GREEN, "Initializing MNIST MODEL Instance", Fore.WHITE)
+        print(Fore.GREEN+ "Initializing MNIST MODEL Instance"+ Fore.WHITE)
         self.params = hyperParams
 
         super(MnistModel, self).__init__()

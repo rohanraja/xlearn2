@@ -11,5 +11,5 @@ class MnistDataset():
 
     def __init__(self, hyperParams={}):
 
-        print(Fore.YELLOW, "Initializing MNIST Dataset Instance", Fore.WHITE)
+        print(Fore.YELLOW+ "Initializing MNIST Dataset Instance"+ Fore.WHITE)
         self.params = hyperParams
