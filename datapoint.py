@@ -1,4 +1,4 @@
-from dbmodels import *
+from .dbmodels import *
 from pony.orm import *
 
 # set_sql_debug(True)

@@ -1,7 +1,7 @@
 import os
 import sys
-from config import *
-import datapoint
+from .config import *
+from . import datapoint
 
 def readClassFromPyFile(pyDir, pyFileName, className):
     sys.path.insert(0, os.path.abspath(pyDir))
