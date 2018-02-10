@@ -38,3 +38,17 @@ class MnistModel(nn.Module):
     def Forward(self, x):
         x_var = Variable(x)
         return self(x_var)
+
+    def GetWeights(self):
+        return self.parameters()
+
+    def GetGradients(self, loss):
+        loss.backward()
+        grads = []
+        for prm in self.GetWeights():
+            grads.append(prm.grad)
+        return grads
+
+    def SetWeights(self, weights):
+        for prm, newWeight in zip(self.GetWeights(), weights):
+            prm.data = newWeight.data

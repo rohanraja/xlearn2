@@ -41,11 +41,20 @@ class TestStartTraining(unittest.TestCase):
         self.loadComponents()
         self.attachComponents()
 
-        x, y = self.trainDataset.getSingleBatch(self.batch_size)
-        yPred = self.model.Forward(x)
-
-        loss = self.lossFunction.calcLoss(yPred, y)
+        self.x, self.y = self.trainDataset.getSingleBatch(self.batch_size)
+        yPred = self.model.Forward(self.x)
+    
+        loss = self.lossFunction.calcLoss(yPred, self.y)
         assert isinstance(loss.data[0], float)
+        return loss
+
+    def test_executing_forward_pass_on_network_and_compute_gradient(self):
+        
+        loss = self.test_executing_forward_pass_on_network_and_compute_loss()
+        assert isinstance(loss.data[0], float)
+
+        grads = self.model.GetGradients(loss)
+        assert next(iter(grads)).shape[0] == 32
 
 
     def test_performing_single_training_step_and_check_that_loss_decreases(self):
@@ -55,7 +64,36 @@ class TestStartTraining(unittest.TestCase):
         2. Attach these components to ModelTrainer
         3. 
         """
-        assert True 
+        loss = self.test_executing_forward_pass_on_network_and_compute_loss()
+        initialLoss = loss.data[0]
+
+        assert isinstance(initialLoss, float)
+
+        weights = self.model.GetWeights()
+        grads = self.model.GetGradients(loss)
+
+        newWeights = []
+
+        for w,g in zip(weights, grads):
+          newWt = w - 0.1*g
+          newWeights.append(newWt)
+
+        self.model.SetWeights(newWeights)
+
+        yPredNew = self.model.Forward(self.x)
+        lossNew = self.lossFunction.calcLoss(yPredNew, self.y)
+        newLoss = lossNew.data[0]
+
+        print(newLoss, initialLoss)
+
+        assert newLoss < initialLoss
+
+    def test_extracting_model_weights(self):
+        self.loadComponents()
+        self.attachComponents()
+        weights = self.model.GetWeights()
+        firstWeight = next(iter(weights)) 
+        assert firstWeight.shape[0] == 32
 
 if __name__ == '__main__':
     unittest.main()
