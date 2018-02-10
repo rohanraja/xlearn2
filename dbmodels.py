@@ -64,3 +64,4 @@ class PyEntityParams(db.Entity):
 
 db.bind(provider='sqlite', filename='xlearn.sqlite', create_db=True)
 db.generate_mapping(create_tables=True)
+

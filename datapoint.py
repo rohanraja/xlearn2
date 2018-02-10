@@ -86,18 +86,19 @@ def CreatePyEntityForExperiment(name, pyCode, params, experimentId, Type, role=-
 def ListPyEntityParamsOfExperiment(experimentId):
     exp = getExperimentById(experimentId)
     outP = exp.py_entity_paramss.select()[:] 
-    for epm in outP:
-        epm.py_entity.load()
-        epm.py_entity.python_class.load()
-
+    # for epm in outP:
+    #     epm.py_entity.load()
+    #     epm.py_entity.python_class.load()
     return outP
 
 
 @db_session
 def GetPyEntityFromParam(enParamId):
     pyPm = PyEntityParams.get(id=enParamId)
-    pyPm.py_entity.load()
-    return pyPm.py_entity
+    pyId = pyPm.py_entity.id
+    outP = PyEntity[pyId]
+    outP.load()
+    return outP
 
 @db_session
 def GetPyClassFromPyEntity(enId):

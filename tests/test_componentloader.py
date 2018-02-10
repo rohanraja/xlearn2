@@ -5,11 +5,17 @@ from xlearn2 import config
 DATASET_PYFILE = "testdata/mnist_dataset.py"
 DATASET_CLASS_NAME = "MnistDataset"
 
+class MockDataPoint:
+
+    def ListPyEntityParamsOfExperiment(self, expId):
+        return []
+
+
 def readPyCodeFromFile(fName):
-  f = open(fName, 'r')
-  outP = f.read()
-  f.close()
-  return outP
+    f = open(fName, 'r')
+    outP = f.read()
+    f.close()
+    return outP
 
 class TestLoadingPYEntites(unittest.TestCase):
     def test_loading_dataset_from_pycode_text(self):
@@ -23,6 +29,7 @@ class TestLoadingPYEntites(unittest.TestCase):
 
     def test_components_loader(self):
 
+      mockDP = MockDataPoint()
       c = componentloader.ComponentsLoader()
       c.experimentId = 1
       c.loadComponents()

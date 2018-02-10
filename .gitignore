@@ -5,3 +5,4 @@
 .pythoscope
 testdata
 mnist_png
+tests/data

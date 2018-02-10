@@ -2,6 +2,7 @@ import os
 import sys
 from .config import *
 from . import datapoint
+import pickle
 
 def readClassFromPyFile(pyDir, pyFileName, className):
     sys.path.insert(0, os.path.abspath(pyDir))
@@ -26,6 +27,12 @@ def loadPyClassFromPyCode(pycode, className):
 
 
 class ComponentsLoader():
+
+    def __init__(self, pDatapoint=None):
+        if pDatapoint == None:
+            self.datapoint = datapoint
+        else:
+            self.datapoint = pDatapoint
     
     def loadComponents(self):
         self.loadEntityList()
@@ -46,10 +53,7 @@ class ComponentsLoader():
             self.preprocessors = self.Components[PREPROCESSOR_TYPE]
             self.preprocessors.sort(key=lambda x: x.entityParam.role)
 
-    def getPyObject(self, entityParam):
-        ent = entityParam.py_entity
-        pycls = ent.python_class
-
+    def getPyObject(self, entityParam, ent, pycls):
         CLASS_FACTORY = loadPyClassFromPyCode(pycls.pycode, pycls.className)
         initParams = entityParam.params
         clsObj = CLASS_FACTORY(initParams)
@@ -59,16 +63,21 @@ class ComponentsLoader():
 
     def loadEntityList(self):
 
-        self.entityParams = datapoint.ListPyEntityParamsOfExperiment(self.experimentId) 
+        self.entityParams = self.datapoint.ListPyEntityParamsOfExperiment(self.experimentId) 
+        # pickle.dumps(self.entityParams)
+
         print("\nLoaded %d Python Class Entities for Experiment %s"%(len(self.entityParams) , self.experimentId))
 
         self.Components = {}
 
 
         for entityParam in self.entityParams:
-            entity = entityParam.py_entity
+            entity = self.datapoint.GetPyEntityFromParam(entityParam.id)
+            # pickle.dumps(entity)
+            pycls = self.datapoint.GetPyClassFromPyEntity(entity.id)
+            # pickle.dumps(pycls)
 
-            entity_py_object = self.getPyObject(entityParam)
+            entity_py_object = self.getPyObject(entityParam, entity, pycls)
 
             key = min(entityParam.role, PREPROCESSOR_TYPE)
 
