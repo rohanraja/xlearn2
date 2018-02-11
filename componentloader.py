@@ -53,45 +53,37 @@ class ComponentsLoader():
             self.preprocessors = self.Components[PREPROCESSOR_TYPE]
             self.preprocessors.sort(key=lambda x: x.entityParam.role)
 
-    def getPyObject(self, entityParam, ent, pycls):
-        CLASS_FACTORY = loadPyClassFromPyCode(pycls.pycode, pycls.className)
-        initParams = entityParam.params
+    def getPyObject(self, pycode, className, initParams):
+        CLASS_FACTORY = loadPyClassFromPyCode(pycode, className)
         clsObj = CLASS_FACTORY(initParams)
-        clsObj.entityParam = entityParam
-
         return clsObj
 
     def loadEntityList(self):
 
-        self.entityParams = self.datapoint.ListPyEntityParamsOfExperiment(self.experimentId) 
-        # pickle.dumps(self.entityParams)
+        # self.entityParams = self.datapoint.ListPyEntityParamsOfExperiment(self.experimentId) 
+        self.pyComponents = self.datapoint.GetPYComponentsForExperiment(self.experimentId) 
 
-        print("\nLoaded %d Python Class Entities for Experiment %s"%(len(self.entityParams) , self.experimentId))
+        print("\nLoaded %d Python Class Entities for Experiment %s"%(len(self.pyComponents) , self.experimentId))
 
         self.Components = {}
 
 
-        for entityParam in self.entityParams:
-            entity = self.datapoint.GetPyEntityFromParam(entityParam.id)
-            # pickle.dumps(entity)
-            pycls = self.datapoint.GetPyClassFromPyEntity(entity.id)
-            # pickle.dumps(pycls)
+        for pyComponent in self.pyComponents:
 
-            entity_py_object = self.getPyObject(entityParam, entity, pycls)
+            entity_py_object = self.getPyObject(pyComponent.pyCode, pyComponent.pyClassName, pyComponent.initParams)
 
-            key = min(entityParam.role, PREPROCESSOR_TYPE)
-
+            key = min(pyComponent.role, PREPROCESSOR_TYPE)
 
             compList = self.Components.get(key, [])
             compList.append(entity_py_object)
 
             self.Components[key] = compList
 
-            if entity.Type == MODEL_TYPE:
-                print("Found Model: %s"%entity.name)
+            if pyComponent.role == MODEL_TYPE:
+                print("Found Model: %s"%pyComponent.name)
 
-            if entity.Type == DATASET_TYPE:
-                print("Found Dataset: %s"%entity.name)
+            if pyComponent.role == DATASET_TYPE:
+                print("Found Dataset: %s"%pyComponent.name)
 
-            if entity.Type == PREPROCESSOR_TYPE:
-                print("Found Preprocessor: %s"%entity.name)
+            if pyComponent.role == PREPROCESSOR_TYPE:
+                print("Found Preprocessor: %s"%pyComponent.name)

@@ -111,3 +111,19 @@ def ListPyEntitiesOfExperiment(experimentId):
     enParams = ListPyEntityParamsOfExperiment(experimentId)
     outP = list(map(lambda x: GetPyEntityFromParam(x.id) , enParams))
     return outP
+
+from .iPyComponent import PyComponent
+
+@db_session
+def GetPYComponentsForExperiment(experimentId):
+    entityParams = ListPyEntityParamsOfExperiment(experimentId) 
+    outP = []
+    for entityParam in entityParams:
+        entity = GetPyEntityFromParam(entityParam.id)
+        pycls = GetPyClassFromPyEntity(entity.id)
+        pyComponent = PyComponent(entity.name, pycls.className, pycls.pycode, entityParam.params, entityParam.role)
+        outP.append(pyComponent)
+
+    return outP
+
+
