@@ -6,8 +6,6 @@ from torchvision import datasets, transforms
 from torch.autograd import Variable
 from colorama import Fore
 
-
-
 class MnistModel(nn.Module):
 
     def __init__(self, hyperParams={}):
@@ -52,3 +50,5 @@ class MnistModel(nn.Module):
     def SetWeights(self, weights):
         for prm, newWeight in zip(self.GetWeights(), weights):
             prm.data = newWeight.data
+
+
