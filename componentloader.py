@@ -1,7 +1,7 @@
 import os
 import sys
 from .config import *
-from . import datapoint
+from .pyComponentManager import pyComponentManager
 import pickle
 
 def readClassFromPyFile(pyDir, pyFileName, className):
@@ -28,11 +28,11 @@ def loadPyClassFromPyCode(pycode, className):
 
 class ComponentsLoader():
 
-    def __init__(self, pDatapoint=None):
-        if pDatapoint == None:
-            self.datapoint = datapoint
+    def __init__(self, compManager=None):
+        if compManager == None:
+            self.pyComponentManager = pyComponentManager
         else:
-            self.datapoint = pDatapoint
+            self.pyComponentManager = compManager
     
     def loadComponents(self):
         self.loadEntityList()
@@ -60,8 +60,7 @@ class ComponentsLoader():
 
     def loadEntityList(self):
 
-        # self.entityParams = self.datapoint.ListPyEntityParamsOfExperiment(self.experimentId) 
-        self.pyComponents = self.datapoint.GetPYComponentsForExperiment(self.experimentId) 
+        self.pyComponents = self.pyComponentManager.GetPYComponentsForExperiment(self.experimentId) 
 
         print("\nLoaded %d Python Class Entities for Experiment %s"%(len(self.pyComponents) , self.experimentId))
 
