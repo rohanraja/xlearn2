@@ -28,26 +28,29 @@ class TestModelTrainer(unittest.TestCase):
     Steps:
         1. Initialize Model, Dataset, Trainer, LossFunction
         2. Attach these components to ModelTrainer
-        3. 
+        3. Inject Mock method to train only single batch
+        4. Train and compute loss
+        5. Check that loss decreases during 2nd run
         """
+        # Step 1.
         self.loadComponents()
+
+        # Step 2.
         self.attachComponents()
+        
+        # Step 3.
         x, y = self.trainDataset.getSingleBatch(self.batch_size)
         batches = [(x,y) , (x,y)]
-
         def tempFun(self):
           return batches
-
-        # Injecting Mock method
         self.modelTrainer.getTrainingBatches = MethodType(tempFun, self.modelTrainer)
 
+        # Step 4.
         losses = self.modelTrainer.StartTraining()[0]
         losses2 = self.modelTrainer.StartTraining()[0]
 
+        # Step 5.
         assert losses.data[0] > losses2.data[0]
-
-
-
 
 if __name__ == '__main__':
     unittest.main()
