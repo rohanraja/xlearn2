@@ -20,6 +20,7 @@ class ModelTrainer():
         self.lossFunction = lossFunction
 
         self.batch_size = 50
+        self.StopExecutionFlag = False
 
         
     def prepareModelForTraining(self):
@@ -41,8 +42,15 @@ class ModelTrainer():
         allBatches = self.getTrainingBatches()
         self.prepareModelForTraining()
         for xBatch, yBatch in allBatches:
+            if self.StopExecutionFlag:
+                break
             loss = self.model.train_step(xBatch, yBatch)
             self.updateTrainingStatus(loss)
             losses.append(loss)
 
         return losses
+
+
+    def StopTraining(self):
+
+        self.StopExecutionFlag = True

@@ -3,6 +3,8 @@ from testdata import mnist_model, mnist_dataset, mnist_lossfn, mnist_optimizer
 from xlearn2 import modeltrainer
 import math
 from types import MethodType
+import threading
+import time
 
 
 class TestModelTrainer(unittest.TestCase):
@@ -51,6 +53,35 @@ class TestModelTrainer(unittest.TestCase):
 
         # Step 5.
         assert losses.data[0] > losses2.data[0]
+
+    def test_starting_long_training_and_stopping_training(self):
+        # Step 1.
+        self.loadComponents()
+
+        # Step 2.
+        self.attachComponents()
+        
+        # Step 3.
+        x, y = self.trainDataset.getSingleBatch(self.batch_size)
+
+        # Step 4.
+        trainerThread = threading.Thread(target=self.modelTrainer.StartTraining)
+        trainerThread.daemon = True
+        trainerThread.start()
+
+        # Let it train for some time
+        time.sleep(5)
+
+        assert trainerThread.isAlive() == True
+
+        # Stop the training thread
+        self.modelTrainer.StopTraining()
+
+        # Wait for the trainer to stop
+        time.sleep(2)
+
+        assert trainerThread.isAlive() == False
+
 
 if __name__ == '__main__':
     unittest.main()

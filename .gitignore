@@ -6,3 +6,5 @@
 testdata
 mnist_png
 tests/data
+*.sqlite
+oldFiles/
