@@ -1,0 +1,7 @@
+web:
+  build: .
+  # image: rohan1020/xlearn2
+  # volumes:
+    # - .:/apps/xlearn2
+  # ports:
+    # - "8000:8000"

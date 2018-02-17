@@ -1,4 +1,4 @@
-FROM continuumio/anaconda3
+FROM continuumio/anaconda
 
 MAINTAINER rohanraja9@gmail.com
 
@@ -22,9 +22,7 @@ COPY . ./
 
 ENV PYTHONPATH $PYTHONPATH:/apps
 
-# Expose port 3000 to the Docker host, so we can access it
-# from the outside.
-EXPOSE 8000
-
-WORKDIR /$APP_HOME/webserver
-CMD py.test -s webserver_test.py
+WORKDIR /$APP_HOME/tests
+# CMD py.test -s webserver_test.py
+# CMD ["py.test", "-s", "-v", "webserver_test.py"]
+CMD py.test -s
