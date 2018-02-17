@@ -1,8 +1,10 @@
 from types import MethodType
 
 
-def train_step(self, x, y):
+def train_step(self, batch):
 
+    x = batch[0]
+    y = batch[1]
     yPred = self.Forward(x)
     loss = self.lossFunction.calcLoss(yPred, y)
     weights = self.GetWeights()
@@ -34,17 +36,17 @@ class ModelTrainer():
         return self.trainDataset.getXYGen(self.batch_size)
 
     def updateTrainingStatus(self, loss):
-        print(loss)
+        print(loss.data[0])
 
     def StartTraining(self):
 
         losses = []
         allBatches = self.getTrainingBatches()
         self.prepareModelForTraining()
-        for xBatch, yBatch in allBatches:
+        for batch in allBatches:
             if self.StopExecutionFlag:
                 break
-            loss = self.model.train_step(xBatch, yBatch)
+            loss = self.model.train_step(batch)
             self.updateTrainingStatus(loss)
             losses.append(loss)
 
@@ -54,3 +56,6 @@ class ModelTrainer():
     def StopTraining(self):
 
         self.StopExecutionFlag = True
+
+
+    # def SelectWeights

@@ -54,33 +54,39 @@ class TestModelTrainer(unittest.TestCase):
         # Step 5.
         assert losses.data[0] > losses2.data[0]
 
+
     def test_starting_long_training_and_stopping_training(self):
+        """
+    Steps:
+        1. Initialize Model, Dataset, Trainer, LossFunction
+        2. Attach these components to ModelTrainer
+        3. Start training in a new thread
+        """
+
         # Step 1.
         self.loadComponents()
 
         # Step 2.
         self.attachComponents()
-        
-        # Step 3.
-        x, y = self.trainDataset.getSingleBatch(self.batch_size)
 
-        # Step 4.
+        # Step 3.
         trainerThread = threading.Thread(target=self.modelTrainer.StartTraining)
         trainerThread.daemon = True
         trainerThread.start()
 
-        # Let it train for some time
-        time.sleep(5)
+        # Step 4. Let it train for some time
+        time.sleep(3)
 
-        assert trainerThread.isAlive() == True
+        assert trainerThread.isAlive() is True
 
-        # Stop the training thread
+        # Step 5. Stop the training thread
         self.modelTrainer.StopTraining()
 
-        # Wait for the trainer to stop
+        # Step 6. Wait for the trainer to stop
         time.sleep(2)
 
-        assert trainerThread.isAlive() == False
+        # Step 7. Check if trainer thread has exited
+        assert trainerThread.isAlive() is False
 
 
 if __name__ == '__main__':
