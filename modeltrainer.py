@@ -1,15 +1,15 @@
 from types import MethodType
 
 
-def train_step(self, batch):
+def train_step(self, batch, lossFunction, optimizer):
 
     x = batch[0]
     y = batch[1]
     yPred = self.Forward(x)
-    loss = self.lossFunction.calcLoss(yPred, y)
+    loss = lossFunction.calcLoss(yPred, y)
     weights = self.GetWeights()
     grads = self.GetGradients(loss)
-    newWeights = self.optimizer.calcTrainedWeights(weights, grads)
+    newWeights = optimizer.calcTrainedWeights(weights, grads)
     self.SetWeights(newWeights)
     return loss
 
@@ -26,8 +26,6 @@ class ModelTrainer():
 
         
     def prepareModelForTraining(self):
-        self.model.optimizer = self.optimizer
-        self.model.lossFunction = self.lossFunction
 
         if not hasattr(self.model, "train_step"):
             self.model.train_step = MethodType(train_step, self.model)
@@ -46,7 +44,7 @@ class ModelTrainer():
         for batch in allBatches:
             if self.StopExecutionFlag:
                 break
-            loss = self.model.train_step(batch)
+            loss = self.model.train_step(batch, self.lossFunction, self.optimizer)
             self.updateTrainingStatus(loss)
             losses.append(loss)
 
