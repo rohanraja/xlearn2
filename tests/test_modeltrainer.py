@@ -1,5 +1,5 @@
 import unittest
-from testdata import mnist_model, mnist_dataset, mnist_lossfn, mnist_optimizer
+from testdata import mnist_model, mnist_dataset, mnist_lossfn, mnist_optimizer, mnist_trainstep
 from xlearn2 import modeltrainer
 import math
 from types import MethodType
@@ -18,11 +18,12 @@ class TestModelTrainer(unittest.TestCase):
         self.trainDataset = mnist_dataset.MnistDataset()
         self.optimizer = mnist_optimizer.MnistOptimizer()
         self.lossFunction = mnist_lossfn.MnistLossFn()
+        self.trainStep = mnist_trainstep.MnistTrainStep()
         self.modelTrainer = modeltrainer.ModelTrainer()
 
 
     def attachComponents(self):
-        self.modelTrainer.initialize(self.trainDataset, self.model, self.optimizer, self.lossFunction)
+        self.modelTrainer.initialize(self.trainDataset, self.model, self.optimizer, self.lossFunction, self.trainStep)
 
 
     def test_performing_single_training_step_and_check_that_loss_decreases(self):

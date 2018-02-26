@@ -1,5 +1,5 @@
 import unittest
-from testdata import mnist_model, mnist_dataset, mnist_lossfn, mnist_optimizer
+from testdata import mnist_model, mnist_dataset, mnist_lossfn, mnist_optimizer, mnist_trainstep
 from xlearn2 import modeltrainer
 import math
 
@@ -16,10 +16,11 @@ class TestIModelAndComponents(unittest.TestCase):
         self.optimizer = mnist_optimizer.MnistOptimizer()
         self.lossFunction = mnist_lossfn.MnistLossFn()
         self.modelTrainer = modeltrainer.ModelTrainer()
+        self.trainStep = mnist_trainstep.MnistTrainStep()
 
 
     def attachComponents(self):
-        self.modelTrainer.initialize(self.trainDataset, self.model, self.optimizer, self.lossFunction)
+        self.modelTrainer.initialize(self.trainDataset, self.model, self.optimizer, self.lossFunction, self.trainStep)
 
 
     def test_executing_forward_pass_on_model_and_check_output(self):
